@@ -5,8 +5,8 @@ import Noteitem from "./Noteitem";
 import AddNote from "./AddNote";
 
 const Notes = () => {
-  const { notes, getNotes } = useContext(NoteContext);
-  const [note, setNote] = useState({title: "", description: "", tag: ""})
+  const { notes, getNotes, editNote } = useContext(NoteContext);
+  const [note, setNote] = useState({_id:"", title: "", description: "", tag: ""})
 
 
   useEffect(() => {
@@ -15,6 +15,7 @@ const Notes = () => {
   }, []);
 
   const ref = useRef(null);
+  const refClose = useRef(null);
 
   const updateNote = (currentNote) => {
     ref.current.click();
@@ -22,8 +23,11 @@ const Notes = () => {
     //console.log(currentNote);
   };
 
-  const handleClick = ()=>{
-    
+  const handleClick = (note)=>{
+
+    editNote(note._id, note.title, note.description, note.tag);
+    refClose.current.click();
+
   }
     
     const onChange = (e)=>{
@@ -76,6 +80,8 @@ const Notes = () => {
               placeholder="Enter title"
               value={note.title}
               onChange={onChange}
+              minLength={5}
+              required
             />
             
           </div>
@@ -89,6 +95,8 @@ const Notes = () => {
               placeholder="description"
               value={note.description}
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
 
@@ -111,10 +119,11 @@ const Notes = () => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                ref={refClose}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleClick}>
+              <button disabled={note.title.length<5 || note.description.length<5} type="button" className="btn btn-primary" onClick={()=>{handleClick(note)}}> 
                 Update Note
               </button>
             </div>
@@ -123,6 +132,9 @@ const Notes = () => {
       </div>
       <div className="row my-3">
         <h1>Your notes.</h1>
+        <div className='container mx-2'>
+        {notes.length === 0 && "No notes to display."}
+        </div>
         {notes.map((note) => {
           return (
             <Noteitem updateNote={updateNote} key={note._id} note={note} />

@@ -38,35 +38,27 @@ const NoteState = (props) => {
             },
             body: JSON.stringify({title, description, tag}),
           });
-        //   const json = response.json();
+          const note = await response.json();
           //frontend
-        const note = {
-            "_id": "666434805bb35814cfc46eb6",
-            "user": "6663dffd5137cfc9c6e0cc22",
-            "title": title,
-            "description": description,
-            "tag": tag,
-            "date": "2024-06-08T10:37:52.898Z",
-            "__v": 0
-          }
-        setNotes(notes.concat(note));
+           setNotes(notes.concat(note));
       }
       //delete a note
       const deleteNote = async (id)=>{
         //console.log(id);
         //api call
         const url = `${host}/api/notes/deletenote/${id}`;
-        const response = await fetch(url, {
+        //const response = 
+        await fetch(url, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
               "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY2M2RmZmQ1MTM3Y2ZjOWM2ZTBjYzIyIn0sImlhdCI6MTcxNzgzODExMX0.on0XHGFMGj2Z9ydDkDL9Go7LB4gqPQBE4ggOR_pNmSQ"
             }
           });
-           const json = await response.json();
-           console.log(json);
+           //const json = await response.json();
+           //console.log(json);
         //
-        console.log("deleting note with id = " + id);
+        //console.log("deleting note with id = " + id);
         const newNotes = notes.filter((note)=>{return note._id !== id});
         setNotes(newNotes);
       }
@@ -76,25 +68,28 @@ const NoteState = (props) => {
         //api call
         const url = `${host}/api/notes/updatenote/${id}`;
         const response = await fetch(url, {
-            method: "POST",
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
               "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY2M2RmZmQ1MTM3Y2ZjOWM2ZTBjYzIyIn0sImlhdCI6MTcxNzgzODExMX0.on0XHGFMGj2Z9ydDkDL9Go7LB4gqPQBE4ggOR_pNmSQ"
             },
             body: JSON.stringify({title, description, tag}),
           });
-          const json = response.json();
-        
-        //logic to delete at client side
-        for (let index = 0; index < notes.length; index++) {
-            const element = notes[index];
+          const json = await response.json();
+          //setNotes(json);
+        let newNotes = JSON.parse(JSON.stringify(notes));
+        //logic to edit at client side
+        for (let index = 0; index < newNotes.length; index++) {
+            const element = newNotes[index];
             if(element._id===id){
-                element.title=title
-                element.description=description
-                element.tag=tag
+                newNotes[index].title=title
+                newNotes[index].description=description
+                newNotes[index].tag=tag
+                break;
             }
             
-        }
+            }
+        setNotes(newNotes)
       }
 
   return (
