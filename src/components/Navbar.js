@@ -9,6 +9,10 @@ const Navbar = () => {
 //     // eslint-disable-next-line
 //   }, [location]);
 
+    const handleLogout = ()=>{
+        localStorage.removeItem('token');
+    }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -39,10 +43,10 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
-          <form className="d-flex" role="search">
+          {!localStorage.getItem('token') ? <form className="d-flex" role="search">
           <Link className="btn btn-primary mx-2" to='/login' role="button">Login</Link>
           <Link className="btn btn-primary" to='/signup' role="button">Signup</Link>
-          </form>
+          </form> : <Link className="btn btn-primary" to='/login' role="button" onClick={handleLogout}>logout</Link>}
         </div>
       </div>
     </nav>
